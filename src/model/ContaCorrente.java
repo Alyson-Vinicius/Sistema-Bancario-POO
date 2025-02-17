@@ -42,4 +42,16 @@ public class ContaCorrente extends ContaBancaria {
             return false;
         }
     }
+
+	@Override
+	public void depositar(double valor) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean sacar(double valor) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

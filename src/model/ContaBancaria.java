@@ -14,6 +14,7 @@ public abstract class ContaBancaria implements IConta, Serializable {
     protected boolean ativa;
 
     public ContaBancaria(Integer numeroConta) {
+        super();
         this.numeroConta = numeroConta;
         this.saldo = 0f;
         this.dataAbertura = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
@@ -29,12 +30,41 @@ public abstract class ContaBancaria implements IConta, Serializable {
     }
 
     public void encerrarConta() {
-        this.ativa = false;
+        if (saldo == 0) {
+            this.ativa = false;
+            System.out.println("Conta encerrada com sucesso.");
+        } else {
+            System.out.println("Não é possível encerrar a conta. O saldo precisa estar zerado.");
+        }
     }
 
     @Override
     public float getSaldo() {
         return saldo;
+    }
+
+    public void depositar(float valor) {
+        if (valor > 0) {
+            saldo += valor;
+            System.out.printf("Depósito de R$ %.2f realizado com sucesso.\n", valor);
+        } else {
+            System.out.println("Valor inválido para depósito.");
+        }
+    }
+
+    public boolean sacar(float valor) {
+        if (valor <= 0) {
+            System.out.println("Valor inválido para saque.");
+            return false;
+        }
+        if (valor <= saldo) {
+            saldo -= valor;
+            System.out.printf("Saque de R$ %.2f realizado com sucesso.\n", valor);
+            return true;
+        } else {
+            System.out.println("Saldo insuficiente.");
+            return false;
+        }
     }
 
     @Override

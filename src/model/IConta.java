@@ -1,8 +1,8 @@
 package model;
 
 public interface IConta {
-    void depositar(float valor);
-    boolean sacar(float valor);
+    void depositar(double valor);
+    boolean sacar(double valor);
     boolean transferir(ContaBancaria destino, float valor);
     float getSaldo();
     int getNumeroConta();

@@ -51,12 +51,23 @@ public class Programa {
         }
     }
 
-    private static Object BuscarClienteViaCpf(PersistenciaCliente persistencia, Scanner scanner) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    private static void BuscarClienteViaCpf(PersistenciaCliente persistencia, Scanner scanner) {
+        System.out.print("Digite o CPF do cliente: ");
+        String cpf = scanner.nextLine().replaceAll("\\D", "").trim(); // Normaliza o CPF
 
-	private static void cadastrarCliente(PersistenciaCliente persistencia, Scanner scanner) {
+        Cliente cliente = PersistenciaCliente.localizarClientePorCpf(cpf);
+
+        if (cliente != null) {
+            System.out.println("Cliente encontrado:");
+            System.out.println("Nome: " + cliente.getNome());
+            System.out.println("CPF: " + cliente.getCpf());
+        } else {
+            System.out.println("Cliente não encontrado.");
+        }
+    }
+
+
+    private static void cadastrarCliente(PersistenciaCliente persistencia, Scanner scanner) {
         System.out.print("Insira o CPF: ");
         String cpf = scanner.nextLine();
         System.out.print("Insira o nome: ");
@@ -64,9 +75,14 @@ public class Programa {
         System.out.print("Insira a senha: ");
         String senha = scanner.nextLine();
 
-        persistencia.cadastrarCliente(cpf, nome, senha);
-        System.out.println("Cliente cadastrado: " + cpf + " - " + nome);
+        // Só exibe a mensagem de sucesso se o cadastro for realizado
+        if (persistencia.cadastrarCliente(cpf, nome, senha)) {  
+            System.out.println("Cliente cadastrado com sucesso: " + cpf + " - " + nome);
+        } else {
+            System.out.println("Falha ao cadastrar cliente. ");
+        }
     }
+
 
     private static void login(PersistenciaCliente persistencia, Scanner scanner) {
         System.out.print("Digite o CPF: ");
@@ -74,7 +90,7 @@ public class Programa {
         System.out.print("Digite a senha: ");
         String senha = scanner.nextLine();
 
-        Cliente cliente = persistencia.localizarClientePorCpf(cpf);
+        Cliente cliente = PersistenciaCliente.localizarClientePorCpf(cpf);
 
         if (cliente != null && cliente.getSenha().equals(senha)) {
             System.out.println("Bem-vindo, " + cliente.getNome() + "!");
@@ -91,7 +107,12 @@ public class Programa {
     private static void removerCliente(PersistenciaCliente persistencia, Scanner scanner) {
         System.out.print("Digite o CPF do cliente a ser removido: ");
         String cpf = scanner.nextLine();
-        persistencia.removerCliente(cpf);
+
+        if (persistencia.removerCliente(cpf)) {
+            System.out.println("Cliente removido com sucesso!");
+        } else {
+            System.out.println("Cliente não encontrado.");
+        }
     }
 
     private static void opcoesDeCliente(PersistenciaCliente persistencia, Scanner scanner, Cliente cliente) {
@@ -132,10 +153,49 @@ public class Programa {
         }
     }
 
-    private static Object transferirSaldo(Cliente cliente, Scanner scanner) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    private static void transferirSaldo(Cliente cliente, Scanner scanner) {
+        System.out.print("Digite o número da conta de origem: ");
+        int numeroContaOrigem = Integer.parseInt(scanner.nextLine());
+
+        ContaBancaria contaOrigem = cliente.localizarContaPorNumero(numeroContaOrigem);
+        if (contaOrigem == null) {
+            System.out.println("Conta de origem não encontrada.");
+            return;
+        }
+
+        System.out.print("Digite o número da conta de destino: ");
+        int numeroContaDestino = Integer.parseInt(scanner.nextLine());
+
+        // Verifica se a conta de destino está na lista do mesmo cliente
+        ContaBancaria contaDestino = cliente.localizarContaPorNumero(numeroContaDestino);
+
+        // Se a conta não foi encontrada no próprio cliente, buscar em todos os clientes
+        if (contaDestino == null) {
+            System.out.print("Digite o CPF do destinatário: ");
+            String cpfDestino = scanner.nextLine().replaceAll("\\D", "");
+
+            Cliente destinatario = PersistenciaCliente.localizarClientePorCpf(cpfDestino);
+            if (destinatario != null) {
+                contaDestino = destinatario.localizarContaPorNumero(numeroContaDestino);
+            }
+        }
+
+        if (contaDestino == null) {
+            System.out.println("Conta de destino não encontrada.");
+            return;
+        }
+
+        System.out.print("Digite o valor a transferir: ");
+        float valor = Float.parseFloat(scanner.nextLine());
+
+        if (contaOrigem.sacar(valor)) {
+            contaDestino.depositar(valor);
+            System.out.println("Transferência realizada com sucesso!");
+        } else {
+            System.out.println("Saldo insuficiente para a transferência.");
+        }
+    }
+
 
 	private static void criarConta(Cliente cliente, Scanner scanner) {
         System.out.println("Escolha o tipo de conta:");

@@ -17,19 +17,20 @@ public class ClienteService {
         this.persistencia = new PersistenciaCliente();
     }
 
-    public void cadastrarCliente(Cliente cliente) {
-        persistencia.cadastrarCliente(cliente);
+    public boolean cadastrarCliente(Cliente cliente) {
+        return persistencia.cadastrarCliente(cliente.getCpf(), cliente.getNome(), cliente.getSenha());
     }
 
     public List<Cliente> listarClientes() {
-        return persistencia.getClientes(); // Agora funciona corretamente
+        return persistencia.getClientes();
     }
 
     public Optional<Cliente> buscarPorCpf(String cpf) {
-        return Optional.empty();
+        Cliente cliente = PersistenciaCliente.localizarClientePorCpf(cpf);
+        return Optional.ofNullable(cliente); // Retorna Optional corretamente
     }
 
-    public void removerCliente(String cpf) {
-        persistencia.removerCliente(cpf);
+    public boolean removerCliente(String cpf) {
+        return persistencia.removerCliente(cpf);
     }
 }

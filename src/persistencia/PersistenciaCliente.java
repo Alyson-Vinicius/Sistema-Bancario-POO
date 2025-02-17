@@ -7,41 +7,49 @@ import model.Cliente;
 
 public class PersistenciaCliente {
     private static final String ARQUIVO_CLIENTES = "clientes.dat";
-    public List<Cliente> clientes; // Lista de clientes
+    public static List<Cliente> clientes; // Lista de clientes
 
     public PersistenciaCliente() {
-        this.clientes = carregarClientes(); // Carregar clientes do arquivo
+        PersistenciaCliente.clientes = carregarClientes(); // Carregar clientes do arquivo
     }
 
     public boolean cadastrarCliente(String cpf, String nome, String senha) {
         cpf = cpf.replaceAll("\\D", ""); // Remove caracteres não numéricos
 
+        // Valida o CPF
         if (!Cliente.validarCPF(cpf)) {
-            return false; // CPF inválido
+            System.err.println("Erro: CPF inválido! O cliente NÃO foi cadastrado.");
+            return false; // Retorna antes de criar o cliente
         }
 
+        // Verifica se o cliente já está cadastrado
         if (localizarClientePorCpf(cpf) != null) {
-            return false; // CPF já cadastrado
+            System.err.println("Erro: Cliente já cadastrado!");
+            return false; // Retorna imediatamente se o cliente já existir
         }
 
+        // Cria e adiciona o novo cliente
         Cliente novoCliente = new Cliente(cpf, nome, senha);
         clientes.add(novoCliente);
-        salvarClientes(); // Salvar no arquivo
+        salvarClientes(); // Salva a lista atualizada no arquivo
+        System.out.println("Cliente cadastrado com sucesso!"); // Confirmação de cadastro
         return true;
     }
 
-    public Cliente localizarClientePorCpf(String cpf) {
-        cpf = cpf.replaceAll("\\D", "").trim(); // Normaliza o CPF
+
+    public static Cliente localizarClientePorCpf(String cpf) {
+        cpf = cpf.replaceAll("\\D", "").trim(); // Remove caracteres não numéricos
 
         for (Cliente cliente : clientes) {
             if (cliente.getCpf().equals(cpf)) {
                 return cliente;
             }
         }
-        return null;
+        return null; // Retorna null se não encontrar
     }
 
-    public boolean removerCliente(String cpf) {
+
+	public boolean removerCliente(String cpf) {
         Cliente cliente = localizarClientePorCpf(cpf);
         if (cliente != null) {
             clientes.remove(cliente);
@@ -80,8 +88,17 @@ public class PersistenciaCliente {
         }
     }
 
-	public void cadastrarCliente(Cliente cliente) {
-		// TODO Auto-generated method stub
-		
-	}
+    public void cadastrarCliente(Cliente cliente) {
+        if (!Cliente.validarCPF(cliente.getCpf())) {
+            throw new IllegalArgumentException("CPF inválido!"); // Lança erro se CPF for inválido
+        }
+
+        if (localizarClientePorCpf(cliente.getCpf()) != null) {
+            throw new IllegalArgumentException("Cliente já cadastrado!");
+        }
+
+        clientes.add(cliente);
+        salvarClientes();
+    }
+
 }
