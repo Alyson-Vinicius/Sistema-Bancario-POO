@@ -11,7 +11,9 @@ public interface IConta {
         System.out.println("Saldo da conta " + getNumeroConta() + ": R$" + getSaldo());
     }
 
-    default void registrarTransacao(String descricao, float valor) {
-        System.out.println("Transação registrada: " + descricao + " - Valor: R$" + valor);
+    default void registrarTransacao(TipoTransacao debito, float valor) {
+        System.out.println("Transação registrada: " + debito + " - Valor: R$" + valor);
     }
+	void depositar(float valor);
+	boolean sacar(float valor);
 }

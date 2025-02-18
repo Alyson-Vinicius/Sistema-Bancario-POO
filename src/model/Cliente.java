@@ -10,19 +10,18 @@ public class Cliente implements Serializable {
     private String cpf;
     private String nome;
     private String senha;
-    private List<ContaBancaria> contas; // Lista de contas associadas ao cliente
+    private List<ContaBancaria> contas;
 
     public Cliente(String cpf, String nome, String senha) {
         if (!validarCPF(cpf)) {
             throw new IllegalArgumentException("CPF inválido!");
         }
-        this.cpf = cpf.replaceAll("\\D", ""); // Remove caracteres não numéricos
+        this.cpf = cpf.replaceAll("\\D", "");
         this.nome = nome;
         this.senha = senha;
-        this.contas = new ArrayList<>(); // Inicializa a lista de contas
+        this.contas = new ArrayList<>();
     }
 
-    // Getters
     public String getCpf() {
         return cpf;
     }
@@ -39,7 +38,6 @@ public class Cliente implements Serializable {
         return contas;
     }
 
-    // Localizar uma conta pelo número
     public ContaBancaria localizarContaPorNumero(int numeroConta) {
         return contas.stream()
                 .filter(conta -> conta.getNumeroConta() == numeroConta)
@@ -47,20 +45,15 @@ public class Cliente implements Serializable {
                 .orElse(null);
     }
 
-    // Adicionar uma nova conta
     public void adicionarConta(ContaBancaria novaConta) {
         if (novaConta != null) {
             contas.add(novaConta);
             System.out.println("Conta adicionada com sucesso!");
-        } else {
-            System.out.println("Erro: Conta inválida.");
         }
     }
 
-    // Remover uma conta
     public void removerConta(ContaBancaria conta) {
-        if (conta != null && contas.contains(conta)) {
-            contas.remove(conta);
+        if (contas.remove(conta)) {
             System.out.println("Conta removida com sucesso!");
         } else {
             System.out.println("Erro: Conta não encontrada.");
@@ -69,21 +62,12 @@ public class Cliente implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("""
-            ____________________________________
-            | Cliente: %s
-            | CPF: %s
-            | Contas: %d
-            ____________________________________""", 
-            nome, cpf, contas.size());
+        return String.format("Cliente: %s | CPF: %s | Contas: %d", nome, cpf, contas.size());
     }
 
-    // Validação de CPF
     public static boolean validarCPF(String cpf) {
         cpf = cpf.replaceAll("[^0-9]", "");
-
         if (cpf.length() != 11 || cpf.matches("(\\d)\\1{10}")) return false;
-
         return calcularDigitoVerificador(cpf);
     }
 
@@ -107,27 +91,4 @@ public class Cliente implements Serializable {
         return primeiroDigito == Character.getNumericValue(cpf.charAt(9)) &&
                segundoDigito == Character.getNumericValue(cpf.charAt(10));
     }
-
-
-
-
-	public ContaBancaria localizarContaPorNumero1(int numeroConta) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void removerConta1(ContaBancaria localizarContaPorNumero) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void adicionarConta1(ContaBancaria novaConta) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public List<Cliente> getContas1() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

@@ -69,19 +69,25 @@ public class Programa {
 
     private static void cadastrarCliente(PersistenciaCliente persistencia, Scanner scanner) {
         System.out.print("Insira o CPF: ");
-        String cpf = scanner.nextLine();
+        String cpf = scanner.nextLine().replaceAll("\\D", ""); // Remove caracteres não numéricos
+
         System.out.print("Insira o nome: ");
         String nome = scanner.nextLine();
+        
         System.out.print("Insira a senha: ");
         String senha = scanner.nextLine();
 
-        // Só exibe a mensagem de sucesso se o cadastro for realizado
-        if (persistencia.cadastrarCliente(cpf, nome, senha)) {  
-            System.out.println("Cliente cadastrado com sucesso: " + cpf + " - " + nome);
-        } else {
-            System.out.println("Falha ao cadastrar cliente. ");
+        try {
+            if (persistencia.cadastrarCliente(cpf, nome, senha)) {
+                System.out.println("Cliente cadastrado com sucesso!");
+            } else {
+                System.out.println("Falha ao cadastrar cliente.");
+            }
+        } catch (IllegalArgumentException e) {
+            System.err.println("Erro ao cadastrar cliente: " + e.getMessage());
         }
     }
+
 
 
     private static void login(PersistenciaCliente persistencia, Scanner scanner) {
