@@ -35,8 +35,6 @@ public class ContaPoupanca extends ContaBancaria {
 
     @Override
     public boolean transferir(ContaBancaria destino, float valor) {
-        float taxa = 0; // Poupança geralmente não tem taxa de transferência
-
         if (valor > 0 && valor <= saldo) {
             saldo -= valor;
             destino.depositar(valor);

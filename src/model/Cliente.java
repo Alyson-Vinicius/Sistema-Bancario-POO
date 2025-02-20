@@ -91,4 +91,17 @@ public class Cliente implements Serializable {
         return primeiroDigito == Character.getNumericValue(cpf.charAt(9)) &&
                segundoDigito == Character.getNumericValue(cpf.charAt(10));
     }
+    
+    public float calcularBalancoTotal() {
+        return (float) contas.stream()
+                     .filter(ContaBancaria::isAtiva) // Considera apenas contas ativas
+                     .mapToDouble(ContaBancaria::getSaldo)
+                     .sum();
+    }
+
+	public boolean isEmpty() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

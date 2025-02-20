@@ -4,8 +4,12 @@ import model.Cliente;
 import model.ContaBancaria;
 import model.ContaCorrente;
 import model.ContaPoupanca;
+import model.Transacao;
 import persistencia.PersistenciaCliente;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Programa {
@@ -128,15 +132,16 @@ public class Programa {
             try {
                 System.out.println(" ____________________________________ ");
                 System.out.println("|            Menu Cliente            |");
-                System.out.println("|1 -> Criar Conta                    |");
-                System.out.println("|2 -> Depositar                      |");
-                System.out.println("|3 -> Sacar                          |");
-                System.out.println("|4 -> Transferir                     |");
-                System.out.println("|5 -> Saldo de uma conta             |");
-                System.out.println("|6 -> Saldo total das Contas         |");
-                System.out.println("|7 -> Listar Contas                  |");
-                System.out.println("|8 -> Remover Conta                  |");
-                System.out.println("|9 -> Voltar ao Menu Principal       |");
+                System.out.println("|1  -> Criar Conta                   |");
+                System.out.println("|2  -> Depositar                     |");
+                System.out.println("|3  -> Sacar                         |");
+                System.out.println("|4  -> Transferir                    |");
+                System.out.println("|5  -> Saldo de uma conta            |");
+                System.out.println("|6  -> Saldo total das Contas        |");
+                System.out.println("|7  -> Listar Contas                 |");
+                System.out.println("|8  -> Remover Conta                 |");
+                System.out.println("|9  -> Extrato Bancario              |");
+                System.out.println("|10 -> Voltar ao Menu Principal      |");
                 System.out.println("|____________________________________|");
 
                 int opcao = Integer.parseInt(scanner.nextLine());
@@ -150,7 +155,25 @@ public class Programa {
                     case 6 -> saldoContaTotal(cliente);
                     case 7 -> listarContas(cliente);
                     case 8 -> removerConta(cliente, scanner);
-                    case 9 -> voltar = true;
+                    case 9 -> {
+                        System.out.print("Digite o número da conta: ");
+                        int numeroConta = Integer.parseInt(scanner.nextLine());
+
+                        ContaBancaria conta = cliente.localizarContaPorNumero(numeroConta);
+                        if (conta == null) {
+                            System.out.println("Conta não encontrada.");
+                            break;
+                        }
+
+                        System.out.print("Digite o mês do extrato (1-12): ");
+                        int mes = Integer.parseInt(scanner.nextLine());
+
+                        System.out.print("Digite o ano do extrato: ");
+                        int ano = Integer.parseInt(scanner.nextLine());
+
+                        extratoBancario(conta, mes, ano);
+                    }
+                    case 10 -> voltar = true;
                     default -> System.out.println("Opção inválida.");
                 }
             } catch (NumberFormatException e) {
@@ -159,7 +182,62 @@ public class Programa {
         }
     }
 
-    private static void transferirSaldo(Cliente cliente, Scanner scanner) {
+    
+ 
+
+    private static Object extratoBancario(Object extratoBancario) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private static Object extratoBancario(int opcao, int opcao2) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private static void extratoBancario(ContaBancaria conta, int mes, int ano) {
+	    if (conta == null) {
+	        System.out.println("Erro: Conta não encontrada.");
+	        return;
+	    }
+
+	    List<Transacao> transacoes = conta.obterTransacoes(); // Pegando a lista de transações
+
+	    if (transacoes.isEmpty()) {
+	        System.out.println("Nenhuma transação registrada.");
+	        return;
+	    }
+
+	    System.out.printf("\nExtrato da Conta %d - %02d/%d\n", conta.getNumeroConta(), mes, ano);
+	    System.out.println("--------------------------------------------------");
+
+	    boolean encontrouMovimentacao = false;
+	    for (Transacao transacao : transacoes) {
+	        if (transacao.getDataHora().getMonthValue() == mes && transacao.getDataHora().getYear() == ano) {
+	            System.out.println(transacao);
+	            encontrouMovimentacao = true;
+	        }
+	    }
+
+	    if (!encontrouMovimentacao) {
+	        System.out.println("Nenhuma movimentação encontrada para esse período.");
+	    }
+	    System.out.println("--------------------------------------------------");
+	}
+
+
+
+
+
+    
+	public List<Transacao> obterTransacoes() {
+	    return new ArrayList<>(transacoes); // Retorna uma cópia da lista de transações
+	}
+
+
+
+
+	private static void transferirSaldo(Cliente cliente, Scanner scanner) {
         System.out.print("Digite o número da conta de origem: ");
         int numeroContaOrigem = Integer.parseInt(scanner.nextLine());
 
